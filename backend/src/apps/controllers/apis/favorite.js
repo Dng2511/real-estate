@@ -1,6 +1,7 @@
 
 const FavoriteModel = require("../../models/favorite");
-const UserModel = require("../../models/User")
+const UserModel = require("../../models/User");
+const pagination = require("../../../libs/Pagination");
 
 exports.getByUser = async () => {
     const {id} = req.params
@@ -26,7 +27,20 @@ exports.getByUser = async () => {
                 page,
                 limit,
             },
-            data: properties,
-            pages: await pagination(ProductModel, limit, page, { cat_id: id})
+            data: favorites,
+            pages: await pagination(FavoriteModel, limit, page, { user_id: id})
         })
 }
+
+exports.addFavorite = async (req, res) => {
+    const body = req.body;
+
+    const comment = {
+        user_id: body.user_id,
+        property: body.property_id
+    };
+
+    await new CommentModel(comment).save();
+
+    res.status(200);
+};

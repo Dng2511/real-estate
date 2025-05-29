@@ -1,4 +1,3 @@
-import React from "react";
 import { Container } from "@mui/system";
 import {
   Button,
@@ -9,38 +8,46 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import BuildingData from "../../../data/building";
 
-function Building() {
+import ApartmentData from "../../data/apartment";
+import React from "react";
+import { getPropertyByType } from "../../libs/api/Api";
+
+
+
+const ProContainer = ({typeId}) => {
+  const [page, setPage] = React.useState(1);
+  const [properties, setProperties] = React.useState([]);
+  console.log(typeId);
+  
+  React.useEffect(() => {
+    getPropertyByType(typeId, {
+      params: {
+        limit: 8,
+       page: page,
+      }
+    }).then(({ data }) => {
+      setProperties(data.data);
+     setPage(data.pages.currentPage);
+    });
+  }, [page])
+
+
   return (
+    
+    
     <Container maxWidth="xl" sx={{ margin: "10px 0px 0px 0px" }}>
-      <Grid maxWidth="xl" spacing={7} container>
-        {{ BuildingData } &&
-          BuildingData.map((item) => {
+      <Grid container spacing={5}>
+        {{ ApartmentData } &&
+          properties.map((item) => {
             return (
-              <Grid
-                key={item.id}
-                xs={12}
-                sm={6}
-                md={4}
-                lg={3}
-                xl={2.4}
-                item
-                WidthFull
-              >
-                <Card WidthFull>
-                  <CardMedia
-                    component="img"
-                    alt=""
-                    height={160}
-                    image={item.image}
-                  />
+              <Grid xs={12} sm={6} md={4} lg={3} xl={2.4} key={item.id} item>
+                <Card>
+                  <CardMedia component="img" image={item.images[0]} height="200" />
                   <CardContent>
-                    <Typography variant="h6" align="center">
-                      Building
-                    </Typography>
+                    <Typography align="center">{item.title}</Typography>
                   </CardContent>
-                  <CardActions sx={{ display: "flex" }} WidthFull>
+                  <CardActions>
                     <Button
                       sx={{
                         textAlign: "bottom",
@@ -73,6 +80,6 @@ function Building() {
       </Grid>
     </Container>
   );
-}
+};
 
-export default Building;
+export default ProContainer;

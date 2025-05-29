@@ -37,11 +37,6 @@ const propertySchema = new mongoose.Schema({
         ref: 'PropertyType',
         required: true
     },
-    owner_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
     images: [{
         url: String,
         description: String

@@ -27,12 +27,40 @@ exports.getAll  = async (req, res) => {
             page,
             limit,
         },
-        data: {
-            docs: properties,
-        },
+        data: properties,
         pages: await pagination(PropertyModel, limit, page, query),
     });
 };
+
+exports.addProperty = async(req, res) =>{
+    try {
+        const { title, description, price, area, address, status, type_id} = req.body;
+
+        // Nếu có file ảnh
+        const images = (req.files || []).map(file => ({
+            url: file.filename,   // chỉ lưu tên ảnh
+            description: ""       // có thể thêm input mô tả nếu cần
+        }));
+
+        const newProperty = new PropertyModel({
+            title,
+            description,
+            price,
+            area,
+            address: JSON.parse(address), // vì gửi từ FormData nên cần parse
+            status,
+            type_id,
+            images
+        });
+
+        await newProperty.save();
+        res.status(201).json(newProperty);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Lỗi tạo bất động sản" });
+    }
+    
+}
 
 exports.findById = async (req, res) => {
     const id = req.params.id;
@@ -86,7 +114,7 @@ exports.storeComment = async (req, res) => {
 
     await new CommentModel(comment).save();
 
-    res.status(200).json({
+    res.status(201).json({
         status: "success",
         message: "Comment created successfully",
     });
