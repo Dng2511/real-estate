@@ -25,7 +25,7 @@ exports.getPropertyByType = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
     const skip = limit*(page-1);
-    const properties = await PropertyModel.find({type_id: id}).skip(skip).limit(limit);
+    const properties = await PropertyModel.find({type_id: id}).sort({ _id: -1 }).skip(skip).limit(limit);
 
     res.status(200)
         .json({
