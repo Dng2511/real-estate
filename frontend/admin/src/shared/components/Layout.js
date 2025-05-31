@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Button } from 'antd';
+import { Link } from 'react-router-dom';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   HomeOutlined,
   AppstoreOutlined,
+  HomeFilled,
+  CalendarOutlined
 } from '@ant-design/icons';
 
 const { Header, Sider, Content, Footer } = Layout;
@@ -40,12 +43,22 @@ const AdminLayout = ({ children }) => {
             {
               key: '1',
               icon: <HomeOutlined />,
-              label: 'Dashboard',
+              label: <Link to="/">Dashboard</Link>,
             },
             {
               key: '2',
+              icon: <HomeFilled />,
+              label: <Link to="/properties">Properties</Link>,
+            },
+            {
+              key: '3',
               icon: <AppstoreOutlined />,
-              label: 'Property Types',
+              label: <Link to="/property-types">Property Types</Link>,
+            },
+            {
+              key: '4',
+              icon: <CalendarOutlined />,
+              label: <Link to="/appointments">Appointments</Link>,
             },
           ]}
         />

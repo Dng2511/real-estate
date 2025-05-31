@@ -4,10 +4,15 @@ const appointmentCtrl = require("../apps/controllers/apis/appointment")
 const propertyCtrl = require("../apps/controllers/apis/property")
 const propertyTypeCtrl = require("../apps/controllers/apis/propertyType")
 const userCtrl = require("../apps/controllers/apis/user");
+const imageController = require("../apps/controllers/image")
 const upload = require('../middleware/upload');
 
 
 const router = express.Router();
+
+
+router.get('/image/:filename', imageController.getImage);
+
 
 router.get('/appointments', appointmentCtrl.getAppointment);
 router.put('/appointments/:id/status', appointmentCtrl.updateAppointmentStatus);
@@ -18,6 +23,8 @@ router.get('/favorites/:id', favoriteCtrl.getByUser);
 
 router.get('/properties', propertyCtrl.getAll);
 router.post('/properties',upload.array('images') ,propertyCtrl.addProperty);
+router.delete('/properties/:id', propertyCtrl.deleteProperty)
+
 
 router.get('/properties/:id', propertyCtrl.findById);
 router.get('/properties/:id/comments', propertyCtrl.comment);

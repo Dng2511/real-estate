@@ -10,7 +10,7 @@ exports.getAll  = async (req, res) => {
     if (req.query.name) query.$text = { $search: req.query.name };
 
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 12;
+    const limit = parseInt(req.query.limit) || 10;
     const skip = limit * (page - 1);
 
     const properties = await PropertyModel.find(query)
@@ -62,6 +62,19 @@ exports.addProperty = async(req, res) =>{
     
 }
 
+
+
+exports.deleteProperty = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await PropertyModel.deleteOne({ _id: id });
+        res.status(200).json({ message: "Delete success" });
+    } catch (error) {
+        res.status(500).json({ message: error });
+    }
+}
+
+
 exports.findById = async (req, res) => {
     const id = req.params.id;
     const property = await PropertyModel.findById(id);
@@ -80,7 +93,7 @@ exports.findById = async (req, res) => {
 exports.comment = async (req, res) => {
     const id = req.params.id;
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 12;
+    const limit = parseInt(req.query.limit) || 10;
     const skip = limit * (page - 1);
 
     const comments = await CommentModel.find({ property_id: id })
