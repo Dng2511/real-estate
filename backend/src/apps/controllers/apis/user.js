@@ -3,18 +3,22 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const pagination = require("../../../libs/Pagination");
 
-const JWT_SECRET = process.env.JWT_SECRET || "0";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.register = async (req, res) => {
-    const { name, email, password, phone_number } = req.body;
+    const { name, email, password, phone } = req.body;
+    const role = req.params.role;
+    if (role != "customer" && role != "owner") {
+        return res.status(401).json({ status: "error", message: "Invalid role" });
+    }
 
-    const existing = await UserModel.findOne({ email, role: "customer" });
+    const existing = await UserModel.findOne({ email, role });
     if (existing) {
         return res.status(400).json({ status: "error", message: "Email already exists" });
     }
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = new UserModel({ name, email, password: hashed });
+    const user = new UserModel({ name, email, password: hashed, phone, role });
     await user.save();
 
     res.status(201).json({

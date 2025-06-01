@@ -6,16 +6,24 @@ const propertyTypeCtrl = require("../apps/controllers/apis/propertyType")
 const userCtrl = require("../apps/controllers/apis/user");
 const imageController = require("../apps/controllers/image")
 const upload = require('../middleware/upload');
+const verifyToken = require('../middleware/verifyToken');
 
 
 const router = express.Router();
+
+router.post('/register/:role', userCtrl.register)
+router.post('/login', userCtrl.login)
 
 
 router.get('/image/:filename', imageController.getImage);
 
 
 router.get('/appointments', appointmentCtrl.getAppointment);
+router.get('/appointments/my-appointments', verifyToken, appointmentCtrl.getMyAppointments);
+
+
 router.put('/appointments/:id/status', appointmentCtrl.updateAppointmentStatus);
+
 
 
 router.get('/favorites/:id', favoriteCtrl.getByUser);
