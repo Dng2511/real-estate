@@ -31,7 +31,8 @@ exports.register = async (req, res) => {
 // [POST] /api/users/login
 exports.login = async (req, res) => {
     const { email, password } = req.body;
-    const user = await UserModel.findOne({ email });
+    const role = req.params.role;
+    const user = await UserModel.findOne({ email, role });
     if (!user) {
         return res.status(401).json({ status: "error", message: "Invalid email or password" });
     }
@@ -41,7 +42,7 @@ exports.login = async (req, res) => {
         return res.status(401).json({ status: "error", message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
     res.status(200).json({
         status: "success",

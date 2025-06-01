@@ -1,9 +1,10 @@
 // src/layouts/CustomerLayout.jsx
-import { Layout, Menu, Avatar, Dropdown, Row, Col} from "antd";
+import { Layout, Menu, Avatar, Dropdown, Row, Col, Button } from "antd";
 import { HomeOutlined, ScheduleOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import React from "react";
 import { getPropertyTypes } from "../api/api";
+import { AuthContext } from "./auth/AuthContext";
 
 const { Header, Content, Footer } = Layout;
 
@@ -13,8 +14,9 @@ const CustomerLayout = () => {
   const location = useLocation();
   const currentPath = location.pathname;
   const [types, setTypes] = React.useState([]);
+  const { user, handleLogout } = React.useContext(AuthContext);
 
-  
+
 
   const avatarMenuItems = [
     {
@@ -25,6 +27,7 @@ const CustomerLayout = () => {
       key: "logout",
       icon: <LogoutOutlined />,
       label: "Đăng xuất",
+      onClick: handleLogout,
     },
   ];
 
@@ -61,11 +64,19 @@ const CustomerLayout = () => {
           </Menu.Item>
         </Menu>
 
-        <Dropdown menu={{ items: avatarMenuItems }} placement="bottomRight" arrow>
-          <Avatar size="large" style={{ backgroundColor: "#1890ff", cursor: "pointer" }}>
-            U
-          </Avatar>
-        </Dropdown>
+        {user ? (
+          <Dropdown menu={{ items: avatarMenuItems }} placement="bottomRight" arrow>
+            <Avatar size="large" style={{ backgroundColor: "#1890ff", cursor: "pointer" }}>
+              {user.charAt(0).toUpperCase()}
+            </Avatar>
+          </Dropdown>
+        ) : (
+          <Link to="/login">
+            <Button type="link">
+              Đăng nhập
+            </Button>
+          </Link>
+        )}
       </Header>
 
 
@@ -77,19 +88,19 @@ const CustomerLayout = () => {
         <div style={{ padding: "10px", background: "#ffffff", borderRadius: 8, marginBottom: 5 }}>
           <Row gutter={[14, 14]} justify="center" align="middle">
             {types.map((type) => (
-              <Link to={id==type._id? "properties":`/property-type/${type._id}`}>
+              <Link to={id === type._id ? "properties" : `/property-type/${type._id}`}>
                 <Col key={type._id}>
                   <div
                     style={{
                       padding: "10px 16px",
-                      backgroundColor:type._id===id? "#bae7ff" : "#e6f7ff", // xanh nhạt
+                      backgroundColor: type._id === id ? "#bae7ff" : "#e6f7ff", // xanh nhạt
                       display: "flex",
                       justifyContent: "center",
                       borderRadius: "8px",
                       width: "120px",
                       cursor: "pointer",
                       fontWeight: "bold",
-                      color: type._id===id? "#096dd9": "#1890ff",
+                      color: type._id === id ? "#096dd9" : "#1890ff",
                       boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                       transition: "all 0.3s",
                     }}
@@ -98,8 +109,8 @@ const CustomerLayout = () => {
                       e.currentTarget.style.color = "#096dd9";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = type._id===id? "#bae7ff" : "#e6f7ff";
-                      e.currentTarget.style.color = type._id===id? "#096dd9": "#1890ff";
+                      e.currentTarget.style.backgroundColor = type._id === id ? "#bae7ff" : "#e6f7ff";
+                      e.currentTarget.style.color = type._id === id ? "#096dd9" : "#1890ff";
                     }}
                   >
                     {type.name}

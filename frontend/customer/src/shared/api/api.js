@@ -1,5 +1,8 @@
 import { Http } from "./Http";
 
+export const login = (data) => Http.post("/login/customer", data);
+export const register = (data) => Http.post("register/customer", data);
+
 
 export const getProperties = (config) => Http.get("/properties", config);
 export const postProperty = (formData) => Http.post("/properties", formData);
@@ -17,7 +20,7 @@ export const deletePropertyType = (id) => Http.delete(`/property-types/${id}`);
 
 export const getPropertyByType = (id, config) => Http.get(`/property-types/${id}`, config);
 
-export const getAppointments = (config) => Http.get("/appointments", config);
+export const getAppointments = (config) => Http.get("/appointments/my-appointments", config);
 export const updateAppointmentStatus = (id, data) => Http.put(`/appointments/${id}/status`, data);
 
 export const getFavoritesByUser = (id, config) => Http.get(`/favorites/${id}`, config);

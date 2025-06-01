@@ -12,13 +12,14 @@ const verifyToken = require('../middleware/verifyToken');
 const router = express.Router();
 
 router.post('/register/:role', userCtrl.register)
-router.post('/login', userCtrl.login)
+router.post('/login/:role', userCtrl.login)
 
 
 router.get('/image/:filename', imageController.getImage);
 
 
 router.get('/appointments', appointmentCtrl.getAppointment);
+router.post('/appointments', verifyToken, appointmentCtrl.createAppointment);
 router.get('/appointments/my-appointments', verifyToken, appointmentCtrl.getMyAppointments);
 
 

@@ -60,13 +60,20 @@ exports.updateAppointmentStatus = async (req, res) => {
 exports.getMyAppointments = async (req, res) => {
     try {
         const userId = req.user._id; // req.user được gán bởi middleware xác thực token
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = limit * (page - 1);
 
         const appointments = await AppointmentModel.find({ user_id: userId })
-            .populate('property_id') // nếu muốn lấy thông tin chi tiết property
-            .populate('user_id', '-password') // ẩn mật khẩu người dùng nếu cần
-            .sort({ scheduled_time: -1 });
+            .select("-user_id")
+            .populate("property_id", "title address")
+            .sort({ scheduled_time: -1 })
+            .skip(skip)
+            .limit(limit);
 
-        res.status(200).json({ status: "success", data: appointments });
+
+
+        res.status(200).json({ status: "success", data: appointments, pages: await pagination(AppointmentModel, limit, page, { user_id: userId }) });
     } catch (err) {
         res.status(500).json({ status: "error", message: 'Lỗi server', error: err.message });
     }
@@ -77,6 +84,7 @@ exports.getMyAppointments = async (req, res) => {
 exports.createAppointment = async (req, res) => {
     try {
         const userId = req.user._id; // từ middleware xác thực token
+        console.log(req.user);
         const { property_id, scheduled_time, note } = req.body;
 
         if (!property_id || !scheduled_time) {
